@@ -1,0 +1,77 @@
+# =========================
+# ENUM
+# =========================
+enum BookingStatus {
+  PENDING
+  PAID
+  CANCELLED
+}
+
+# =========================
+# TYPE MOVIE (DARI MOVIE SERVICE)
+# =========================
+type Movie {
+  id: Int
+  title: String
+  duration: Int
+  rating: Float
+}
+
+# =========================
+# TYPE BOOKING
+# =========================
+type Booking {
+  id: Int
+  userId: String
+  movieId: Int
+  seatNumber: String
+  totalPrice: Float
+  status: BookingStatus
+  movie: Movie
+}
+
+# =========================
+# QUERY
+# =========================
+type Query {
+  bookings: [Booking]
+  booking(id: Int!): Booking
+}
+
+# =========================
+# MUTATION
+# =========================
+type Mutation {
+  # BUAT BOOKING (1 SEAT = 1 BOOKING)
+  createBooking(
+    userId: String!
+    movieId: Int!
+    seatNumber: String!
+    totalPrice: Float!
+  ): Booking
+
+  # DIPANGGIL PAYMENT SERVICE
+  updateBookingStatus(
+    id: Int!
+    status: BookingStatus!
+  ): Booking
+
+  # BAYAR 1 BOOKING (AMAN, SESUAI RESOLVER)
+  payBooking(
+    bookingId: Int!
+  ): Booking
+
+  # BAYAR SEMUA BOOKING PENDING (MULTI SEAT)
+  payAllBookings(
+    userId: String!
+  ): PaymentSummary
+}
+
+# =========================
+# PAYMENT SUMMARY (UNTUK MULTI SEAT)
+# =========================
+type PaymentSummary {
+  totalSeat: Int!
+  totalAmount: Float!
+  status: BookingStatus!
+}
