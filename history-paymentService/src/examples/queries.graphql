@@ -1,0 +1,69 @@
+# Queries: History Payment Service
+
+# 1) Get all histories
+query AllHistories {
+  allHistories {
+    id
+    transactionId
+    userId
+    amount
+    method
+    status
+    createdAt
+  }
+}
+
+# 2) Get histories for a specific user
+query HistoriesByUser($userId: String!) {
+  historiesByUser(userId: $userId) {
+    id
+    transactionId
+    amount
+    method
+    status
+    createdAt
+  }
+}
+
+# 3) Get single history by id
+query HistoryById($id: Int!) {
+  historyById(id: $id) {
+    id
+    transactionId
+    userId
+    amount
+    method
+    status
+    createdAt
+  }
+}
+
+# 4) Create a history entry (mutation)
+mutation CreateHistory(
+  $transactionId: Int!,
+  $userId: String!,
+  $amount: Int!,
+  $method: String,
+  $status: PaymentStatus!
+) {
+  createHistory(
+    transactionId: $transactionId,
+    userId: $userId,
+    amount: $amount,
+    method: $method,
+    status: $status
+  ) {
+    id
+    transactionId
+    userId
+    amount
+    method
+    status
+    createdAt
+  }
+}
+
+# cURL example (replace URL and variables)
+# curl -X POST http://localhost:4000/ \
+#  -H "Content-Type: application/json" \
+#  -d '{"query":"query AllHistories { allHistories { id transactionId userId amount status createdAt } }"}'

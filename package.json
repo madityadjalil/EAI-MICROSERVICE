@@ -1,0 +1,29 @@
+{
+  "name": "movie-microservice",
+  "version": "1.0.0",
+  "description": "Three Node.js microservices (movie-service, booking-service, user-service) using Apollo Server v4, Prisma and MySQL.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/madityadjalil/EAI-MICROSERVICE.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/madityadjalil/EAI-MICROSERVICE/issues"
+  },
+  "homepage": "https://github.com/madityadjalil/EAI-MICROSERVICE#readme",
+  "dependencies": {
+    "@apollo/server": "^5.2.0",
+    "@prisma/client": "^7.1.0",
+    "graphql": "^16.12.0",
+    "prisma": "^7.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}

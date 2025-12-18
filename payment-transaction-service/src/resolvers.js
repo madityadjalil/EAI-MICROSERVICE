@@ -11,6 +11,13 @@ export const resolvers = {
       });
     },
 
+    // convenience alias so clients can query `id` at root
+    id: (_, { id }) => {
+      return prisma.transaction.findUnique({
+        where: { id },
+      });
+    },
+
     transactionsByUser: (_, { userId }) => {
       return prisma.transaction.findMany({
         where: { userId },
@@ -131,7 +138,7 @@ export const resolvers = {
         }
 
         // 5️⃣ SAVE SUCCESS
-        return prisma.transaction.create({
+        const created = await prisma.transaction.create({
           data: {
             bookingId,
             userId,
@@ -140,6 +147,34 @@ export const resolvers = {
             status: "SUCCESS",
           },
         });
+
+        // 6️⃣ Notify history-payment-service (best-effort)
+        try {
+          await fetch(process.env.HISTORY_SERVICE_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              query: `
+                mutation CreateHistory($transactionId: Int!, $userId: String!, $amount: Int!, $method: String, $status: PaymentStatus!) {
+                  createHistory(transactionId: $transactionId, userId: $userId, amount: $amount, method: $method, status: $status) {
+                    id
+                  }
+                }
+              `,
+              variables: {
+                transactionId: created.id,
+                userId,
+                amount,
+                method: "WALLET",
+                status: "SUCCESS",
+              },
+            }),
+          });
+        } catch (e) {
+          console.error("Failed to notify history service:", e.message);
+        }
+
+        return created;
 
       } catch (err) {
         console.error("PAYMENT FAILED:", err.message);
